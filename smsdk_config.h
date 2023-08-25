@@ -38,12 +38,12 @@
  */
 
 /* Basic information exposed publicly */
-#define SMEXT_CONF_NAME			"Sample Extension"
-#define SMEXT_CONF_DESCRIPTION	"Sample extension to help developers"
+#define SMEXT_CONF_NAME			"PluginSys Wrapper"
+#define SMEXT_CONF_DESCRIPTION	"Extension for exposing IPluginSys interface to plugins"
 #define SMEXT_CONF_VERSION		"0.0.0.0"
-#define SMEXT_CONF_AUTHOR		"AlliedModders"
-#define SMEXT_CONF_URL			"http://www.sourcemod.net/"
-#define SMEXT_CONF_LOGTAG		"SAMPLE"
+#define SMEXT_CONF_AUTHOR		""
+#define SMEXT_CONF_URL			""
+#define SMEXT_CONF_LOGTAG		"PSW"
 #define SMEXT_CONF_LICENSE		"GPL"
 #define SMEXT_CONF_DATESTRING	__DATE__
 
@@ -71,7 +71,7 @@
 //#define SMEXT_ENABLE_LIBSYS
 //#define SMEXT_ENABLE_MENUS
 //#define SMEXT_ENABLE_ADTFACTORY
-//#define SMEXT_ENABLE_PLUGINSYS
+#define SMEXT_ENABLE_PLUGINSYS
 //#define SMEXT_ENABLE_ADMINSYS
 //#define SMEXT_ENABLE_TEXTPARSERS
 //#define SMEXT_ENABLE_USERMSGS
