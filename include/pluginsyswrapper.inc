@@ -3,6 +3,14 @@
 #endif
 #define _pluginsyswrapper_included_
 
+public Extension __ext_pluginsyswrapper = 
+{
+	name = "PluginSys Wrapper",
+	file = "pluginsyswrapper.ext",
+	autoload = 1,
+	required = 1,
+};
+
 enum HandleError
 {
     HandleError_None = 0,		/**< No error */
