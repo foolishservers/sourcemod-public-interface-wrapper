@@ -1,7 +1,7 @@
 /**
  * vim: set ts=4 :
  * =============================================================================
- * SourceMod Sample Extension
+ * SourceMod PluginSys Wrapper Extension
  * Copyright (C) 2004-2008 AlliedModders LLC.  All rights reserved.
  * =============================================================================
  *
@@ -34,14 +34,14 @@
 
 /**
  * @file extension.h
- * @brief Sample extension code header.
+ * @brief PluginSys Wrapper extension code header.
  */
 
 #include "smsdk_ext.h"
 
 
 /**
- * @brief Sample implementation of the SDK Extension.
+ * @brief PluginSys Wrapper implementation of the SDK Extension.
  * Note: Uncomment one of the pre-defined virtual functions in order to use it.
  */
 class PluginSysWrapper : public SDKExtension
@@ -66,7 +66,7 @@ public:
 	 * @brief This is called once all known extensions have been loaded.
 	 * Note: It is is a good idea to add natives here, if any are provided.
 	 */
-	//virtual void SDK_OnAllLoaded();
+	virtual void SDK_OnAllLoaded();
 
 	/**
 	 * @brief Called when the pause state is changed.

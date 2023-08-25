@@ -1,7 +1,7 @@
 /**
  * vim: set ts=4 :
  * =============================================================================
- * SourceMod Sample Extension
+ * SourceMod PluginSys Wrapper Extension
  * Copyright (C) 2004-2008 AlliedModders LLC.  All rights reserved.
  * =============================================================================
  *
@@ -36,6 +36,62 @@
  * @brief Implement extension code here.
  */
 
-Sample g_PluginSysWrapper;		/**< Global singleton for extension's main interface */
+PluginSysWrapper g_PluginSysWrapper;		/**< Global singleton for extension's main interface */
 
 SMEXT_LINK(&g_PluginSysWrapper);
+
+cell_t LoadPluginEx(IPluginContext *pContext, const cell_t *params)
+{
+    char *path;
+    bool debug = false;
+    PluginType type = PluginType_MapUpdated;
+    char *error;
+    size_t maxlength;
+    cell_t *wasloaded;
+
+    pContext->LocalToString(params[1], &path);
+    pContext->LocalToString(params[2], &error);
+    maxlength = (size_t)params[3];
+    pContext->LocalToPhysAddr(params[4], &wasloaded);
+
+    IPlugin *pPlugin = plsys->LoadPlugin(path, debug, type, error, maxlength, (bool *)wasloaded);
+
+    if(pPlugin == NULL)
+    {
+        return (cell_t)BAD_HANDLE;
+    }
+    
+    return (cell_t)pPlugin->GetMyHandle();
+}
+
+cell_t UnloadPluginEx(IPluginContext *pContext, const cell_t *params)
+{
+    Handle_t handle;
+    HandleError *err;
+
+    handle = params[1];
+    pContext->LocalToPhysAddr(params[2], (cell_t **)&err);
+
+    IPlugin *pPlugin = plsys->PluginFromHandle(handle, err);
+
+    if(pPlugin == NULL)
+    {
+        return (cell_t)false;
+    }
+
+    *err = HandleError_None;
+
+    return (cell_t)plsys->UnloadPlugin(pPlugin);
+}
+
+const sp_nativeinfo_t natives[] = 
+{
+	{"LoadPluginEx",   LoadPluginEx},
+    {"UnloadPluginEx", UnloadPluginEx},
+	{NULL,			 NULL},
+};
+
+void PluginSysWrapper::SDK_OnAllLoaded()
+{
+    sharesys->AddNatives(myself, natives);
+}
