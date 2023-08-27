@@ -66,7 +66,7 @@ native bool UnloadPluginEx(Handle handle, HandleError &err);
  * @param plugin	Handle.
  * @return			True on success, false otherwise.
  */
-bool UnloadPlugin(Handle handle)
+stock bool UnloadPlugin(Handle handle)
 {
     HandleError err;
     return UnloadPluginEx(handle, err);
