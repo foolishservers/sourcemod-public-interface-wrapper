@@ -51,17 +51,17 @@ cell_t LoadPluginEx(IPluginContext *pContext, const cell_t *params)
 
     pContext->LocalToString(params[1], &path);
     pContext->LocalToString(params[2], &error);
-    maxlength = (size_t)params[3];
+    maxlength = static_cast<size_t>(params[3]);
     pContext->LocalToPhysAddr(params[4], &wasloaded);
 
-    IPlugin *pPlugin = plsys->LoadPlugin(path, debug, type, error, maxlength, (bool *)wasloaded);
+    IPlugin *pPlugin = plsys->LoadPlugin(path, debug, type, error, maxlength, reinterpret_cast<bool *>(wasloaded));
 
     if(pPlugin == NULL)
     {
-        return (cell_t)BAD_HANDLE;
+        return static_cast<cell_t>(BAD_HANDLE);
     }
     
-    return (cell_t)pPlugin->GetMyHandle();
+    return static_cast<cell_t>(pPlugin->GetMyHandle());
 }
 
 cell_t UnloadPluginEx(IPluginContext *pContext, const cell_t *params)
@@ -70,18 +70,18 @@ cell_t UnloadPluginEx(IPluginContext *pContext, const cell_t *params)
     HandleError *err;
 
     handle = params[1];
-    pContext->LocalToPhysAddr(params[2], (cell_t **)&err);
+    pContext->LocalToPhysAddr(params[2], reinterpret_cast<cell_t **>(&err));
 
     IPlugin *pPlugin = plsys->PluginFromHandle(handle, err);
 
     if(pPlugin == NULL)
     {
-        return (cell_t)false;
+        return static_cast<cell_t>(false);
     }
 
     *err = HandleError_None;
 
-    return (cell_t)plsys->UnloadPlugin(pPlugin);
+    return static_cast<cell_t>(plsys->UnloadPlugin(pPlugin));
 }
 
 const sp_nativeinfo_t natives[] = 
