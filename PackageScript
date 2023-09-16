@@ -49,7 +49,7 @@ CopyFiles('include', 'addons/sourcemod/scripting/include',
 
 # Copy autoload.
 CopyFiles('extensions', 'addons/sourcemod/extensions',
-  [ 'pluginsyswrapper.autoload', ]
+  [ 'publicinterfacewrapper.autoload', ]
 )
 
 # Copy binaries.
