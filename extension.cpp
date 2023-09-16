@@ -1,7 +1,7 @@
 /**
  * vim: set ts=4 :
  * =============================================================================
- * SourceMod PluginSys Wrapper Extension
+ * SourceMod Public Interface Wrapper Extension
  * Copyright (C) 2004-2008 AlliedModders LLC.  All rights reserved.
  * =============================================================================
  *
@@ -36,9 +36,12 @@
  * @brief Implement extension code here.
  */
 
-PluginSysWrapper g_PluginSysWrapper;		/**< Global singleton for extension's main interface */
+PublicInterfaceWrapper g_PublicInterfaceWrapper;		/**< Global singleton for extension's main interface */
 
-SMEXT_LINK(&g_PluginSysWrapper);
+SMEXT_LINK(&g_PublicInterfaceWrapper);
+
+HandleType_t g_GlobalFwdType = 0;
+HandleType_t g_PrivateFwdType = 0;
 
 cell_t LoadPluginEx(IPluginContext *pContext, const cell_t *params)
 {
@@ -56,7 +59,7 @@ cell_t LoadPluginEx(IPluginContext *pContext, const cell_t *params)
 
     IPlugin *pPlugin = plsys->LoadPlugin(path, debug, type, error, maxlength, reinterpret_cast<bool *>(wasloaded));
 
-    if(pPlugin == NULL)
+    if (pPlugin == NULL)
     {
         return static_cast<cell_t>(BAD_HANDLE);
     }
@@ -74,7 +77,7 @@ cell_t UnloadPluginEx(IPluginContext *pContext, const cell_t *params)
 
     IPlugin *pPlugin = plsys->PluginFromHandle(handle, err);
 
-    if(pPlugin == NULL)
+    if (pPlugin == NULL)
     {
         return static_cast<cell_t>(false);
     }
@@ -84,14 +87,132 @@ cell_t UnloadPluginEx(IPluginContext *pContext, const cell_t *params)
     return static_cast<cell_t>(plsys->UnloadPlugin(pPlugin));
 }
 
+static cell_t AddToGlobalForward(IPluginContext *pContext, const cell_t *params)
+{
+    char *fwdName;
+	Handle_t plHandle = static_cast<Handle_t>(params[2]);
+	HandleError err;
+	IChangeableForward *pForward;
+	IPlugin *pPlugin;
+
+    pContext->LocalToString(params[1], &fwdName);
+
+    if ((pForward = static_cast<IChangeableForward *>(forwards->FindForward(fwdName, NULL)))
+        == NULL)
+    {
+        return pContext->ThrowNativeError("Invalid global forward name %s", fwdName);
+    }
+
+	if (plHandle == 0)
+	{
+		pPlugin = plsys->FindPluginByContext(pContext->GetContext());
+	} else {
+		pPlugin = plsys->PluginFromHandle(plHandle, &err);
+
+		if (!pPlugin)
+		{
+			return pContext->ThrowNativeError("Plugin handle %x is invalid (error %d)", plHandle, err);
+		}
+	}
+
+	IPluginFunction *pFunction = pPlugin->GetBaseContext()->GetFunctionById(params[3]);
+
+	if (!pFunction)
+	{
+		return pContext->ThrowNativeError("Invalid function id (%X)", params[3]);
+	}
+
+	return pForward->AddFunction(pFunction);
+}
+
+static cell_t RemoveFromGlobalForward(IPluginContext *pContext, const cell_t *params)
+{
+    char *fwdName;
+	Handle_t plHandle = static_cast<Handle_t>(params[2]);
+	HandleError err;
+	IChangeableForward *pForward;
+	IPlugin *pPlugin;
+
+    pContext->LocalToString(params[1], &fwdName);
+
+    if ((pForward = static_cast<IChangeableForward *>(forwards->FindForward(fwdName, NULL)))
+        == NULL)
+    {
+        return pContext->ThrowNativeError("Invalid global forward name %s", fwdName);
+    }
+
+	if (plHandle == 0)
+	{
+		pPlugin = plsys->FindPluginByContext(pContext->GetContext());
+	} else {
+		pPlugin = plsys->PluginFromHandle(plHandle, &err);
+
+		if (!pPlugin)
+		{
+			return pContext->ThrowNativeError("Plugin handle %x is invalid (error %d)", plHandle, err);
+		}
+	}
+
+	IPluginFunction *pFunction = pPlugin->GetBaseContext()->GetFunctionById(params[3]);
+
+	if (!pFunction)
+	{
+		return pContext->ThrowNativeError("Invalid function id (%X)", params[3]);
+	}
+
+	return pForward->RemoveFunction(pFunction);
+}
+
+static cell_t RemoveAllFromGlobalForward(IPluginContext *pContext, const cell_t *params)
+{
+    char *fwdName;
+	Handle_t plHandle = static_cast<Handle_t>(params[2]);
+	HandleError err;
+	IChangeableForward *pForward;
+	IPlugin *pPlugin;
+
+    pContext->LocalToString(params[1], &fwdName);
+
+    if ((pForward = static_cast<IChangeableForward *>(forwards->FindForward(fwdName, NULL)))
+        == NULL)
+    {
+        return pContext->ThrowNativeError("Invalid global forward name %s", fwdName);
+    }
+
+	if (plHandle == 0)
+	{
+		pPlugin = plsys->FindPluginByContext(pContext->GetContext());
+	} else {
+		pPlugin = plsys->PluginFromHandle(plHandle, &err);
+
+		if (!pPlugin)
+		{
+			return pContext->ThrowNativeError("Plugin handle %x is invalid (error %d)", plHandle, err);
+		}
+	}
+
+	return pForward->RemoveFunctionsOfPlugin(pPlugin);
+}
+
 const sp_nativeinfo_t natives[] = 
 {
-	{"LoadPluginEx",   LoadPluginEx},
-    {"UnloadPluginEx", UnloadPluginEx},
-	{NULL,			 NULL},
+	{"LoadPluginEx",               LoadPluginEx},
+    {"UnloadPluginEx",             UnloadPluginEx},
+    {"AddToGlobalForward",         AddToGlobalForward},
+    {"RemoveFromGlobalForward",    RemoveFromGlobalForward},
+    {"RemoveAllFromGlobalForward", RemoveAllFromGlobalForward},
+	{NULL,			               NULL},
 };
 
-void PluginSysWrapper::SDK_OnAllLoaded()
+bool PublicInterfaceWrapper::SDK_OnLoad(char *error, size_t maxlen, bool late)
+{
+    handlesys->FindHandleType("GlobalFwd", &g_GlobalFwdType);
+    handlesys->FindHandleType("PrivateFwd", &g_PrivateFwdType);
+
+    return true;
+}
+
+void PublicInterfaceWrapper::SDK_OnAllLoaded()
 {
     sharesys->AddNatives(myself, natives);
 }

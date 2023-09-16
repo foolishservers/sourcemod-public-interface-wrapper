@@ -1,12 +1,12 @@
-#if defined _pluginsyswrapper_included_
+#if defined _publicinterfacewrapper_included_
   #endinput
 #endif
-#define _pluginsyswrapper_included_
+#define _publicinterfacewrapper_included_
 
-public Extension __ext_pluginsyswrapper = 
+public Extension __ext_publicinterfacewrapper = 
 {
 	name = "PluginSys Wrapper",
-	file = "pluginsyswrapper.ext",
+	file = "publicinterfacewrapper.ext",
 	autoload = 1,
 	required = 1,
 };
@@ -71,3 +71,45 @@ stock bool UnloadPlugin(Handle handle)
     HandleError err;
     return UnloadPluginEx(handle, err);
 }
+
+/**
+ * Adds a function to a private forward's call list.
+ *
+ * @note Cannot be used during an incomplete call.
+ *
+ * @param name          Name of global forward.
+ * @param plugin        Handle of the plugin that contains the function.
+ *                      Pass INVALID_HANDLE to specify the calling plugin.
+ * @param func          Function to add to forward.
+ * @return              True on success, false otherwise.
+ * @error               Invalid global forward name, invalid or corrupt plugin handle, or invalid function.
+ */
+native bool AddToGlobalForward(const char[] name, Handle plugin, Function func);
+
+/**
+ * Removes a function from a private forward's call list.
+ *
+ * @note Only removes one instance.
+ * @note Functions will be removed automatically if their parent plugin is unloaded.
+ *
+ * @param name          Name of global forward.
+ * @param plugin        Handle of the plugin that contains the function.
+ *                      Pass INVALID_HANDLE to specify the calling plugin.
+ * @param func          Function to remove from forward.
+ * @return              True on success, false otherwise.
+ * @error               Invalid global forward name, invalid or corrupt plugin handle, or invalid function.
+ */
+native bool RemoveFromGlobalForward(const char[] name, Handle plugin, Function func);
+
+/**
+ * Removes all instances of a plugin from a private forward's call list.
+ *
+ * @note Functions will be removed automatically if their parent plugin is unloaded.
+ *
+ * @param name          Name of global forward.
+ * @param plugin        Handle of the plugin to remove instances of.
+ *                      Pass INVALID_HANDLE to specify the calling plugin.
+ * @return              Number of functions removed from forward.
+ * @error               Invalid global forward name, invalid or corrupt plugin handle.
+ */
+native int RemoveAllFromGlobalForward(const char[] name, Handle plugin);

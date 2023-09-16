@@ -1,7 +1,7 @@
 /**
  * vim: set ts=4 :
  * =============================================================================
- * SourceMod PluginSys Wrapper Extension
+ * SourceMod Public Interface Wrapper Extension
  * Copyright (C) 2004-2008 AlliedModders LLC.  All rights reserved.
  * =============================================================================
  *
@@ -38,12 +38,12 @@
  */
 
 /* Basic information exposed publicly */
-#define SMEXT_CONF_NAME			"PluginSys Wrapper"
-#define SMEXT_CONF_DESCRIPTION	"Extension for exposing IPluginSys interface to plugins"
-#define SMEXT_CONF_VERSION		"0.0.0.0"
+#define SMEXT_CONF_NAME			"Public Interface Wrapper"
+#define SMEXT_CONF_DESCRIPTION	"Extension for exposing SourceMod public interface to plugins"
+#define SMEXT_CONF_VERSION		"1.0.0.0"
 #define SMEXT_CONF_AUTHOR		""
 #define SMEXT_CONF_URL			""
-#define SMEXT_CONF_LOGTAG		"PSW"
+#define SMEXT_CONF_LOGTAG		"PIW"
 #define SMEXT_CONF_LICENSE		"GPL"
 #define SMEXT_CONF_DATESTRING	__DATE__
 
@@ -59,8 +59,8 @@
 //#define SMEXT_CONF_METAMOD		
 
 /** Enable interfaces you want to use here by uncommenting lines */
-//#define SMEXT_ENABLE_FORWARDSYS
-//#define SMEXT_ENABLE_HANDLESYS
+#define SMEXT_ENABLE_FORWARDSYS
+#define SMEXT_ENABLE_HANDLESYS
 //#define SMEXT_ENABLE_PLAYERHELPERS
 //#define SMEXT_ENABLE_DBMANAGER
 //#define SMEXT_ENABLE_GAMECONF

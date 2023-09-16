@@ -30,7 +30,7 @@ def CopyFiles(src, dest, files):
 
 # Include files 
 CopyFiles('include', 'addons/sourcemod/scripting/include',
-  [ 'pluginsyswrapper.inc', ]
+  [ 'publicinterfacewrapper.inc', ]
 )
 
 # GameData files
