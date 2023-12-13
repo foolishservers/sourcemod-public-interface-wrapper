@@ -1,0 +1,16 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}",
+                "${workspaceFolder}/../../public",
+                "${workspaceFolder}/../../public/extensions",
+                "${workspaceFolder}/../../sourcepawn/include",
+                "${workspaceFolder}/../../public/amtl/amtl",
+                "${workspaceFolder}/../../public/amtl"
+            ]
+        }
+    ],
+    "version": 4
+}
